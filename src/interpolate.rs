@@ -32,16 +32,14 @@
 use core::f32;
 #[cfg(not(feature = "std"))]
 use core::f64;
-#[cfg(not(feature = "std"))]
-use core::intrinsics::cosf32;
-#[cfg(not(feature = "std"))]
-use core::intrinsics::cosf64;
-#[cfg(not(feature = "std"))]
-use core::ops::{Add, Mul, Sub};
+// #[cfg(not(feature = "std"))]
+// use core::ops::{Add, Mul, Sub};
 #[cfg(feature = "std")]
 use std::f32;
 #[cfg(feature = "std")]
 use std::f64;
+
+use num_traits::float::Float;
 
 /// Types that can be used as interpolator in splines.
 ///
@@ -232,6 +230,6 @@ macro_rules! impl_InterpolateT {
   };
 }
 
-impl_Interpolate!(f32, f32, std::f32::consts::PI);
-impl_Interpolate!(f64, f64, std::f64::consts::PI);
-impl_InterpolateT!(f32, f64, std::f32::consts::PI);
+impl_Interpolate!(f32, f32, core::f32::consts::PI);
+impl_Interpolate!(f64, f64, core::f64::consts::PI);
+impl_InterpolateT!(f32, f64, core::f32::consts::PI);

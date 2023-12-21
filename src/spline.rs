@@ -1,15 +1,14 @@
 //! Spline curves and operations.
 
-#[cfg(feature = "std")]
+// #[cfg(feature = "std")]
 use crate::interpolate::{Interpolate, Interpolator};
 use crate::interpolation::Interpolation;
 use crate::key::Key;
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
-#[cfg(not(feature = "std"))]
 use core::cmp::Ordering;
 #[cfg(not(feature = "std"))]
 use core::ops::{Div, Mul};
+use heapless::Vec;
 #[cfg(any(feature = "serialization", feature = "serde"))]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "std")]
@@ -32,9 +31,9 @@ use std::cmp::Ordering;
   any(feature = "serialization", feature = "serde"),
   derive(Deserialize, Serialize)
 )]
-pub struct Spline<T, V>(pub(crate) Vec<Key<T, V>>);
+pub struct Spline<T, V, const SIZE: usize>(pub(crate) Vec<Key<T, V>, SIZE>);
 
-impl<T, V> Spline<T, V> {
+impl<T, V, const SIZE: usize> Spline<T, V, SIZE> {
   /// Internal sort to ensure invariant of sorting keys is valid.
   fn internal_sort(&mut self)
   where
@@ -42,12 +41,12 @@ impl<T, V> Spline<T, V> {
   {
     self
       .0
-      .sort_by(|k0, k1| k0.t.partial_cmp(&k1.t).unwrap_or(Ordering::Less));
+      .sort_unstable_by(|k0, k1| k0.t.partial_cmp(&k1.t).unwrap_or(Ordering::Less));
   }
 
   /// Create a new spline out of keys. The keys don’t have to be sorted even though it’s recommended
   /// to provide ascending sorted ones (for performance purposes).
-  pub fn from_vec(keys: Vec<Key<T, V>>) -> Self
+  pub fn from_vec(keys: Vec<Key<T, V>, SIZE>) -> Self
   where
     T: PartialOrd,
   {

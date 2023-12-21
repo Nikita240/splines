@@ -18,18 +18,23 @@ default = ["std"]
 impl-cgmath = ["cgmath"]
 impl-glam = ["glam"]
 impl-nalgebra = ["nalgebra"]
-serialization = ["serde"]
-std = []
+serialization = ["serde", "heapless/serde"]
+std = ["num-traits/std"]
+libm = ["num-traits/libm", "nalgebra/libm"]
 
 [dependencies]
-cgmath = { version = ">=0.17, <0.19", optional = true }
-glam = { version = ">=0.10, <0.25", optional = true }
-nalgebra = { version = ">=0.21, <0.33", optional = true }
-serde =  { version = "1", features = ["derive"], optional = true }
+cgmath = { version = ">=0.17, <0.19", default-features = false, optional = true }
+glam = { version = ">=0.10, <0.25", default-features = false, optional = true }
+heapless = { version = "0.7", default-features = false }
+num-traits = { version = ">=0.2, <0.3", default-features = false }
+nalgebra = { version = ">=0.21, <0.33", default-features = false, optional = true }
+serde = { version = "1", default-features = false, features = [
+    "derive",
+], optional = true }
 
 [dev-dependencies]
+serde_json = { version = "1", default-features = false }
 float-cmp = ">=0.6, < 0.10"
-serde_json = "1"
 
 [package.metadata.docs.rs]
 features = ["std", "cgmath", "glam", "nalgebra", "serde"]
